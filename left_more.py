@@ -5,22 +5,18 @@ import shutil
 from dataclasses import dataclass
 from os.path import basename
 from pathlib import Path
-from enum import Enum
-from pathlib import Path
-from typing import List, Optional, Callable, Union
+from typing import Optional, Callable, Union
 
 from docx.enum.table import WD_ROW_HEIGHT_RULE
-from docx.enum.text import WD_LINE_SPACING, WD_BREAK, WD_PARAGRAPH_ALIGNMENT
+from docx.enum.text import WD_LINE_SPACING, WD_PARAGRAPH_ALIGNMENT
 from docx.shared import Cm, Pt
-from docx.table import _Cell, _Row, Table
+from docx.table import Table
 from docx.text.paragraph import Paragraph
 from docx2txt import docx2txt
 
 from docx import Document, ImagePart
 from docx.document import Document as T_Document
 from docx.text.run import Run
-from docx.oxml.text.paragraph import CT_P
-from docx.oxml.table import CT_Tbl
 from docx.oxml.ns import qn
 
 from utils.block import iter_block_items
@@ -63,10 +59,22 @@ class YvoParser:
             section.bottom_margin = Cm(0.5)
             section.left_margin = Cm(1)
             section.right_margin = Cm(1)
-        self.new_doc.styles['Normal'].font.name = u'WenQuanYi Micro Hei'
-        self.new_doc.styles['Normal']._element.rPr.rFonts.set(qn('w:eastAsia'), u'WenQuanYi Micro Hei')
+
+        styles = ['Normal', 'Title']
+        for i in range(1, 10):
+            styles.append(f'Heading {i}')
+        font_name = 'Source Han Sans CN'
+        for style in styles:
+            self.new_doc.styles[style].font.name = font_name
+            self.new_doc.styles[style]._element.rPr.rFonts.set(qn('w:eastAsia'), font_name)
+            self.new_doc.styles[style]._element.rPr.rFonts.set(qn('w:eastAsiaTheme'), font_name)
+            self.new_doc.styles[style]._element.rPr.rFonts.set(qn('w:asciiTheme'), font_name)
+
         self.new_doc_path = new_doc_path
-        self.new_doc.add_heading('化学品安全技术说明书', 0)
+        self.new_doc_path.mkdir(exist_ok=True)
+
+        _heading = self.new_doc.add_heading('化学品安全技术说明书', 0)
+        # print(_heading.style.element.xml)
         self.real_name = ""
 
         self.ps = [

@@ -4,6 +4,7 @@
 from pathlib import Path
 from docx import Document
 
+Path('docx').mkdir(exist_ok=True)
 for file in Path('output_docx').glob('*.docx'):
     doc = Document(file)
     for i in doc.paragraphs:
