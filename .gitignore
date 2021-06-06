@@ -294,3 +294,5 @@ gen
 *.iml
 out
 gen
+/sds_v3/
+/docx/

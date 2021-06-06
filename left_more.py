@@ -448,6 +448,7 @@ class YvoParser:
 
         if process.is_waiting:
             if isinstance(p, Paragraph):
+                text = p.text.strip()
                 if p.style.name == 'Nomral':
                     self.add_run(text)
                 else:
@@ -530,5 +531,5 @@ class YvoParser:
 if __name__ == '__main__':
     total = list(Path('docx/').glob('*.docx'))
     for _index, __p in enumerate(total, start=1):
-        YvoParser(old_doc=__p.absolute(), new_doc_path=Path('sds_v3/')).parse()
+        YvoParser(old_doc=__p.absolute(), new_doc_path=Path('/run/media/mio/Data/sds_v3/')).parse()
         print(f"{_index}/{len(total)} {__p.name} done")
